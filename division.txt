@@ -1,0 +1,10 @@
+Primer metodo recibe 2 listas....
+
+
+Divide el ultimo de L1 por el ultimo de L2 (si el ultimo de L1 es mayor que el de L2.)
+Resultado se agrega al nueva lista cociente. Se hace esto Dividiendo =(dividiendo -( car cociente * divisor)
+
+
+Repetir proceso.
+
+

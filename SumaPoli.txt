@@ -1,0 +1,17 @@
+(1 2 3) + (1 2 3) + (1 2 3)
+
+
+
+caar = primer elemento del primer polinomio
+caadr = primer elemento del segundo polinomio
+
+cdar = cola de la primera lista
+(cdr (cadr) = cola de la segunda lista.
+
+
+cddr = lista 3
+
+Sumar lista 1 y 2 hasta que alguna tenga null, cuando una tiene null se le agregan los demas elementos de una de las listas.
+
+Se hace un cons de la lista resultante con la lista 3 y se aplica el mismo procedimiento, hasta que cdr!= null
+La lista resultante se le aplica el mismo procedimiento pero con la cola de la lista 3

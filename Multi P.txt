@@ -1,0 +1,10 @@
+Hacer metodo que multiplique el primer numero de p1 por todo p2.Luego el segundo.....etc
+El elemento de p1 se envia con la posicion para saber cual es su valor de exponente y asi asignar la nueva posicion del resultado.
+
+
+Multip car p1 por p2 -> Va generando una lista que inserta el resultado de la multiplicacion en cada pos..
+			Al final van a haber tantas listas como elementos de p1. 
+			Se suman todos los numeros de esas listas segun su pos (Suma-p )
+			GG
+
+*Donde se crea la nueva si un elemento quiere caer en la misma pos que otro, simplemete se suman :D
