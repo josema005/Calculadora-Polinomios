@@ -1,3 +1,184 @@
 #lang racket
 ;Proyecto
-(define display
+(define display-p
+  (lambda(L)
+    (if (null? L) null
+        (d-p L 0))))
+(define d-p
+  (lambda(L n)
+    (cond
+      ((null? L) null)
+      ((= (car L) 0) (d-p (cdr L) (+ n 1)))
+      ((= n 0)
+       (if(null? (cdr L))
+          (car L)
+          (append(list (car L)) '(+) (d-p (cdr L) (+ n 1)))))
+      ((= n 1)
+       (if (null? (cdr L))
+           (list (car L) 'x)
+           (append(list (car L)'x ) '(+) (d-p (cdr L) (+ n 1)))))
+      ((= (length L) 1) (list(car L) 'x '^ n))
+          (else (append
+                 (list(car L) 'x '^ n) '(+) (d-p (cdr L) (+ n 1)))))))
+
+;Metodo cuenta cuantos polinomios tiene una lista, metodos para ayudar.
+(define cuantos-p
+  (lambda (polinomios)
+    (if (null? (car polinomios)) 0
+        (c-p polinomios 1))))
+
+(define c-p
+  (lambda (polinomios n)
+    (if (null? (cdr polinomios)) n
+        (c-p (cdr polinomios) (+ n 1)))))
+
+
+
+;Suma de polinomios---------------------------------------------------------------------------
+(define suma-p
+  (lambda (polinomios)
+    (cond ((=(cuantos-p polinomios) 1) polinomios)
+          ((=(cuantos-p polinomios) 2) (suma-doble (car polinomios) (cadr polinomios)))
+          ((=(cuantos-p polinomios) 3) (suma-doble (suma-doble (car polinomios) (cadr polinomios)) (caddr polinomios)))
+          (else 
+          (suma-p (cons (suma-doble (car polinomios) (cadr polinomios)) (cddr polinomios))))
+          )
+    )
+  )
+
+(define suma-doble
+  (lambda (p1 p2)
+    (cond ((and(null? p1) (null? p2)) '())
+          ((null? p1) p2)
+          ((null? p2)  p1)
+          ( else ( cons (+ (car p1) (car p2)) (suma-doble (cdr p1) (cdr p2))))
+          )
+    )
+  )
+
+;Resta de polinomios-----------------------------------------------------------------
+(define negar-lista
+  (lambda (lista)
+    (cond ((null? lista) '())
+          (else
+          (cons (- (car lista)) (negar-lista (cdr lista)))))))
+    
+
+    
+(define resta-doble
+  (lambda (p1 p2)
+    (cond ((and(null? p1) (null? p2)) '())
+          ((null? p1) (negar-lista p2))
+          ((null? p2)  p1)
+          ( else ( cons (- (car p1) (car p2)) (resta-doble (cdr p1) (cdr p2))))
+          )
+    )
+  )
+
+(define resta-p
+  (lambda (polinomios)
+    (cond ((=(cuantos-p polinomios) 1) polinomios)
+          ((=(cuantos-p polinomios) 2) (resta-doble (car polinomios) (cadr polinomios)))
+          ((=(cuantos-p polinomios) 3) (resta-doble (resta-doble (car polinomios) (cadr polinomios)) (caddr polinomios)))
+          (else 
+          (resta-p (cons (resta-doble (car polinomios) (cadr polinomios)) (cddr polinomios))))
+          )
+    )
+  )
+
+;Multiplicacion de polinomios----------------------------------------------------
+(define lista-pos ;Crea una lista con un numero x elevado a la y
+  (lambda (x y)
+    (if (= y 0) (list x)
+        (append (list 0) (lista-pos x (- y 1))))
+        )
+    )
+(define mult1
+  (lambda (mon posMon L)
+    (if (null? L) '(0)
+        (suma-p (mul-mon-p mon posMon L 0)))))
+
+(define mul-mon-p ;Multiplica un monomio por un polinomio.
+  (lambda (mon posMon L posCar)
+    (if (null? L) '()
+          ( cons(lista-pos (* mon (car L)) (+ posMon posCar)) (mul-mon-p mon posMon (cdr L) (+ posCar 1))))))
+ 
+(define multi-doble ;Multiplica 2 polinomios
+  (lambda(L1 L2)
+    (if (null? L1) '()
+     (suma-p(m-doble L1 0 L2)))))
+
+(define m-doble
+  (lambda (L1 posCarL1 L2)
+    (if(null? L1) '()
+       (cons (mult1 (car L1) posCarL1 L2) (m-doble (cdr L1) (+ posCarL1 1) L2) ))))
+
+(define multi-p
+  (lambda(polinomios)
+     (cond ((=(cuantos-p polinomios) 1) polinomios)
+          ((=(cuantos-p polinomios) 2) (multi-doble (car polinomios) (cadr polinomios)))
+          ((=(cuantos-p polinomios) 3) (multi-doble (multi-doble (car polinomios) (cadr polinomios)) (caddr polinomios)))
+          (else 
+          (multi-p (cons (multi-doble (car polinomios) (cadr polinomios)) (cddr polinomios))))
+          )
+    )
+  )
+
+
+;Division-----------------------------------------------------------------------------------
+(define ultimoLista
+  (lambda (L) ;devuelve el ultimo elemento de la lista
+    (if (null? L) 0
+    (if (null? (cdr L)) (car L)
+        (ultimoLista (cdr L))))))
+(define posUltimoLista ;Devuelve la posicion del ultimo elemento de la lista.
+  (lambda (L)
+    (if(null? L) -1;Lista vacia
+       (pos-Ult L 0))))
+(define pos-Ult
+  (lambda (L val)
+     (if (null? (cdr L)) val
+        (pos-Ult (cdr L) (+ val 1)))))
+
+(define primerCociente ;Devuelve el primer cociente. No se pueden recibir listass vacias.
+  (lambda (L)
+    (if (null? L) -1
+         (if (=(car L)0) (primerCociente (cdr L)) 
+             (car L)))))
+(define posPrimerCociente ;Da la posicion del primer cociente.
+  (lambda (L)
+    (if (null? L) 0
+        (pos-Pco L 0))))
+(define pos-Pco
+  (lambda (L pos)
+    (if (= (car L) 0) (pos-Pco (cdr L) (+ pos 1))
+        pos)))
+
+(define imprimo
+  (lambda (L)
+    L))
+(define susDiv1
+  (lambda (dividiendo cociente divisor) ; Hace el nuevo dividiendo , dividiendo -(cociente * divisor) 
+  (resta-doble dividiendo (mult1 (primerCociente cociente) (posPrimerCociente cociente) divisor))))   ;Practicamente es el residuo.
+
+(define susDiv2 ;Devuelve el resultado de division , ultimoDividiendo / ultimodivisor. Cociente
+  (lambda (dividiendo divisor); Para ese metedo tiene que validar antes que (pos1 -pos2 ) >= 0
+    (lista-pos (/(ultimoLista dividiendo) (ultimoLista divisor)) (-(posUltimoLista dividiendo) (posUltimoLista divisor)))))
+(define calculaCociente
+  (lambda (dividiendo divisor cociente)
+    (suma-doble cociente (susDiv2 dividiendo divisor))))
+
+    
+(define divi-p
+  (lambda (dividiendo divisor)
+    (if (<=(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) '()
+        (dvi-p dividiendo divisor '() )
+        )))
+(define dvi-p
+  (lambda (dividiendo divisor cociente)
+     (if (<=(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) cociente
+         (dvi-p (susDiv1 dividiendo (calculaCociente dividiendo divisor cociente) divisor) divisor (calculaCociente dividiendo divisor cociente)))))   
+    
+    
+    
+          

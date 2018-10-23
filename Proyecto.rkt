@@ -126,6 +126,12 @@
 
 
 ;Division-----------------------------------------------------------------------------------
+(define elimina0Final
+  (lambda (L)
+    (if(null? L) '()
+       (if (and (=(length L) 1) (=(car L) 0)) '()
+           (cons (car L) (elimina0Final (cdr L)))))))
+    
 (define ultimoLista
   (lambda (L) ;devuelve el ultimo elemento de la lista
     (if (null? L) 0
@@ -158,16 +164,37 @@
   (lambda (L)
     L))
 (define susDiv1
-  (lambda (dividiendo cociente divisor) ; Hace el nuevo dividiendo , dividiendo -(cociente * divisor) 
+  (lambda (dividiendo cociente divisor) ; Hace el nuevo dividiendo , dividiendo -(cociente * divisor) ;Primero se hace susDiv2
   (resta-doble dividiendo (mult1 (primerCociente cociente) (posPrimerCociente cociente) divisor))))   ;Practicamente es el residuo.
-(define susDiv2 ;Devuelve el resultado de division , ultimoDividiendo / ultimodivisor. 
+
+(define susDiv2 ;Devuelve el resultado de division , ultimoDividiendo / ultimodivisor. Cociente
   (lambda (dividiendo divisor); Para ese metedo tiene que validar antes que (pos1 -pos2 ) >= 0
     (lista-pos (/(ultimoLista dividiendo) (ultimoLista divisor)) (-(posUltimoLista dividiendo) (posUltimoLista divisor)))))
+(define calculaCociente
+  (lambda (dividiendo divisor cociente)
+    (suma-doble cociente (susDiv2 dividiendo divisor))))
 
-;(define divi-p
- ; (lambda (dividiendo divisor)
-  ;  (if (<=(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) '()
-   ;     (
     
-    
-          
+(define divi-p
+  (lambda (dividiendo divisor)
+    (if (<=(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) '()
+        (dvi-p dividiendo divisor '() )
+        )))
+(define dvi-p
+  (lambda (dividiendo divisor cociente)
+     (if (<(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) cociente
+         (dvi-p (elimina0Final(susDiv1 dividiendo (calculaCociente dividiendo divisor cociente) divisor)) divisor (calculaCociente dividiendo divisor cociente)))))   
+;Resiudo de la division
+(define divi-p-residuo
+  (lambda (dividiendo divisor)
+    (if (<=(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) '()
+        (dvi-p-residuo dividiendo divisor '() )
+        )))
+(define dvi-p-residuo
+  (lambda (dividiendo divisor cociente)
+     (if (<(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) dividiendo
+         (dvi-p-residuo (elimina0Final(susDiv1 dividiendo (calculaCociente dividiendo divisor cociente) divisor)) divisor (calculaCociente dividiendo divisor cociente)))))      
+;Division compelte (Cociente y residuo)         
+(define divi-total
+  (lambda (dividiendo divisor)
+    (list (divi-p dividiendo divisor) (divi-p-residuo dividiendo divisor))))
