@@ -174,7 +174,7 @@
   (lambda (dividiendo divisor cociente)
     (suma-doble cociente (susDiv2 dividiendo divisor))))
 
-    
+ ;Funciones devuelven el cociente de la division (respuesta)  
 (define divi-p
   (lambda (dividiendo divisor)
     (if (<=(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) '()
@@ -182,7 +182,7 @@
         )))
 (define dvi-p
   (lambda (dividiendo divisor cociente)
-     (if (<(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) cociente
+     (if (<(-(posUltimoLista dividiendo) (posUltimoLista divisor)) 0) cociente ;Fin de recursividad, retorna respuesta
          (dvi-p (elimina0Final(susDiv1 dividiendo (calculaCociente dividiendo divisor cociente) divisor)) divisor (calculaCociente dividiendo divisor cociente)))))   
 ;Resiudo de la division
 (define divi-p-residuo
@@ -198,3 +198,23 @@
 (define divi-total
   (lambda (dividiendo divisor)
     (list (divi-p dividiendo divisor) (divi-p-residuo dividiendo divisor))))
+
+;-------------------------Derivacion----------------------------------
+(define deriva-n ;Crea un lista nueva segun la derivacion de n
+ (lambda (n pos)
+   (if (= pos 0) '(0)
+       (lista-pos (* n pos) (- pos 1)))))
+
+(define deriva-p ;Deriva un solo polinomio
+ (lambda (polinomio)
+   (if (null? polinomio) '()
+       (deri-p polinomio 0))))
+(define deri-p
+ (lambda (polinomio pos)
+   (if (=(length polinomio) 1) (deriva-n (car polinomio) pos)
+       (suma-doble (deriva-n (car polinomio) pos) (deri-p (cdr polinomio) (+ pos 1))))))
+              
+;Deriva una lista de polinomios
+(define deriva-polinomios
+  (lambda (polinomios)
+    (map deriva-p polinomios)))
