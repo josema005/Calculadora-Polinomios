@@ -218,3 +218,30 @@
 (define deriva-polinomios
   (lambda (polinomios)
     (map deriva-p polinomios)))
+
+;-----------------------------Evaluacion--------------------------------------------------
+(define exponente ;Saca el exponente de un n elevado a la x
+  (lambda (n x)
+    (cond ((= n 0) 0)
+          ((= x 1) n)
+          (
+           else(* n(exponente n (- x 1))))))) 
+
+(define listaExponentes ;Crea una nueva lista del tamaño de "lista" pero elevando cada posicion y no numero.
+  (lambda (lista x)
+    (if (<=(length lista) 1) lista
+        (cons 1 (lista-e (cdr lista) x 1)))))
+(define lista-e ;
+  (lambda (lista x pos)
+    (if (null? lista) '()
+        (cons (exponente x pos) (lista-e (cdr lista) x (+ pos 1))))))
+(define suma-lista
+  (lambda (lista)
+    (if(null? lista) 0
+       (+ (car lista) (suma-lista (cdr lista))))))
+       
+(define evalua; Multiplica 2 listas (La lista del polinomio y otra lista que se crea en base al tamaño del polinomio la cual contiene la evaluacion de x)
+  (lambda (lista x) ;Luego suma la lista resultante.
+    (suma-lista (map * lista (listaExponentes lista x)))))
+
+    
