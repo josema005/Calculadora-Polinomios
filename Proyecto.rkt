@@ -240,8 +240,21 @@
     (if(null? lista) 0
        (+ (car lista) (suma-lista (cdr lista))))))
        
-(define evalua; Multiplica 2 listas (La lista del polinomio y otra lista que se crea en base al tamaño del polinomio la cual contiene la evaluacion de x)
+(define evalua; Multiplica 2 listas (La lista del polinomio y otra lista que se crea en base al tamaño del polinomio la cual contiene los exponentes de x)
   (lambda (lista x) ;Luego suma la lista resultante.
     (suma-lista (map * lista (listaExponentes lista x)))))
 
-    
+;Factorizacion--------------------------------
+(define discriminante
+  (lambda (lista)
+    (- (exponente (cadr lista) 2) (* 4 (car lista) (caddr lista)))))
+
+(define formula
+  (lambda (lista)
+    (/(+(-(cadr lista)) (sqrt(discriminante lista))) (* 2(caddr lista)))
+  ))
+(define formula2
+  (lambda (lista)
+    (/(-(cadr lista) (sqrt(discriminante lista))) (* 2(caddr lista)))
+    ))
+
