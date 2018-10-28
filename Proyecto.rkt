@@ -263,11 +263,27 @@
     '()
     )))
 ;GRADO 3--------------------------------------------
+(define reverse1 ;Invierte una lista
+  (lambda (l)
+  (if (null? l)
+     '()
+     (append (reverse1 (cdr l)) (list (car l)))
+  )))
+(define uneListas ;Une 2 listas ( del mismo tamaño)
+  (lambda (lista1 lista2)
+    (if(null? lista1) '()
+       (cons (car lista1) (cons (car lista2) (uneListas (cdr lista1) (cdr lista2)))))))
+
+(define ordena-raices ;REcibe las posibles raices de un polinomio y las ordena para usar en division sintetica.
+  (lambda (positivos negativos)
+    (uneListas (reverse1 positivos) (reverse1 negativos))))
+
 (define divisores-positivos
  (lambda (n)
    (if (>= n 1)
        (divisores n n)
        (divisores (* -1 n) (* -1 n)))))
+
 (define divisores-negativos
  (lambda(n)
    (if (>= n 1)
@@ -275,8 +291,12 @@
        (map - (divisores (* -1 n) (* -1 n))))))
 (define divisores-PN ;Esto une los divisores negativos y positivos del elemento del ultimo elemento del polininomio (El que no tiene x)
   (lambda (n)
-    (append (divisores-positivos n) (divisores-negativos n))))
- 
+    (ordena-raices (divisores-positivos n) (divisores-negativos n)))) ;Acomodar estos.....
+
+(define divisores-ultimo ;REtorna los divisores del ultimo de la lista. El x de mayor grado
+  (lambda (n)
+    (reverse1 (divisores-positivos n))))
+
 (define divisores
   (lambda (n div)
     (if (> div 0)
@@ -292,7 +312,7 @@
 (define posibles-raices
   (lambda (lista)
     (if (null? lista) '()
-        (posibles-raices2  (divisores-PN (car lista)) (divisores-positivos (ultimoLista lista))))))
+        (posibles-raices2  (divisores-PN (car lista)) (divisores-ultimo (ultimoLista lista))))))
 
 (define posibles-raices2
   (lambda (listaA listaB) ;Dividir Cada car de listaB por todos los de lista A
@@ -349,7 +369,7 @@
   (lambda (lista)
     (if (and (=(length lista) 4) (not(eq? (cadddr lista) 0)))
         (if (integer? (div-s lista))
-            (cons (list (-(div-s lista)) 1 ) (grado2 (div-s11 lista (div-s lista))))
+            (cons (list (-(div-s lista)) 1 ) (grado2 (invertir(div-s11 lista (div-s lista)))))
              (display '(El polinomio no tiene raices reales)))
          (display '(El polinomio no cumple con los requisitos)))))
 
@@ -358,4 +378,4 @@
   (lambda (lista)
     (cond ((=(length lista) 3) (grado2 lista))
           ((=(length lista) 4) (grado3 lista))
-          (else (cons (list (-(div-s lista)) 1 ) (gradoN(div-s11 lista (div-s lista))))))))
+          (else (cons (list (-(div-s lista)) 1 ) (gradoN (invertir(div-s11 lista (div-s lista)))))))))
